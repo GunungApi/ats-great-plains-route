@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>ATS Great Plains Route</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha512-sA+e2WFqJPKxU9IiiaivGi99ZTSdKCbFf8gDuwZQ+Q0jrISFRCGDpa2BkLomqKgJo0vvVuv5QWFl/dwZ0pQf0A=="
+    crossorigin=""
+  />
+  <style>
+    html, body, #map { height: 100%; margin: 0; }
+    .city-marker {
+      background: #2a9fd6;
+      color: #fff;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha512-OzHnGoQHe9fFDHBW1ManIeZDV4SSQdlqzTeWY5Avzkdxl3pNGdisz8Iky3Uczdlz7YTlNxP70uQh6Uu1qzPLxA=="
+    crossorigin=""
+  ></script>
+  <script src="https://unpkg.com/leaflet.polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
+  <script>
+    // --- 座標配列 ---
+    const cities = [
+      { name: "Dalhart, TX", coords: [36.059305, -102.513519] },
+      { name: "Guymon, OK", coords: [36.682762, -101.481544] },
+      { name: "Garden City, KS", coords: [37.971689, -100.872661] },
+      { name: "Dodge City, KS", coords: [37.752798, -100.017078] },
+      { name: "Hutchinson, KS", coords: [38.060844, -97.929774] },
+      { name: "Wichita, KS", coords: [37.687176, -97.330052] },
+      { name: "Emporia, KS", coords: [38.403903, -96.181662] },
+      { name: "Topeka, KS", coords: [39.055825, -95.689018] },
+      { name: "Kansas City, MO", coords: [39.099724, -94.578331] }
+    ];
 
+    const map = L.map('map');
+
+    const tileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+    const attribution = '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attribution">CARTO</a>';
+    L.tileLayer(tileUrl, {
+      attribution,
+      maxZoom: 19
+    }).addTo(map);
+
+    const routeCoords = cities.map(c => c.coords);
+    const routeLine = L.polyline(routeCoords, { color: '#d95f0e', weight: 4 }).addTo(map);
+    map.fitBounds(routeLine.getBounds());
+
+    // --- マーカー生成 ---
+    cities.forEach((city, index) => {
+      const marker = L.marker(city.coords, {
+        icon: L.divIcon({
+          html: `<div class="city-marker">${index + 1}</div>`,
+          className: ''
+        })
+      }).addTo(map);
+      marker.bindPopup(city.name);
+    });
+
+    // --- 矢印生成 ---
+    L.polylineDecorator(routeLine, {
+      patterns: [
+        {
+          offset: 25,
+          repeat: 50,
+          symbol: L.Symbol.arrowHead({
+            pixelSize: 8,
+            polygon: false,
+            pathOptions: { color: '#d95f0e', weight: 2 }
+          })
+        }
+      ]
+    }).addTo(map);
+  </script>
+</body>
+</html>

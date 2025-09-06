@@ -1,0 +1,12 @@
+{
+  "name": "ats-great-plains-route",
+  "version": "1.0.0",
+  "description": "A simple static map showing the route across the Great Plains using [Leaflet](https://leafletjs.com/) and [Leaflet.PolylineDecorator](https://github.com/bbecquet/Leaflet.PolylineDecorator).",
+  "scripts": {
+    "test": "node htmlhint.js index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
